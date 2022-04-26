@@ -1,13 +1,37 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Tab } from '@headlessui/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import categories from './data'
+import axios from 'axios'
+import type { IBidding } from '../../types/bidding'
+import { ClockIcon } from '@heroicons/react/solid'
+import { formatDistance } from 'date-fns'
+import Modal, { DetailModal } from '../modals/index'
+import classNames from '../../utils/className'
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
 function Tabs() {
+  const [data, setData] = useState<IBidding[]>()
+  const [loading, setLoading] = useState(true)
+  const [selectedItem, setSelectedItem] = useState<IBidding>()
+  const [isOpen, setIsOpen] = useState(false)
+  async function getMongo() {
+    try {
+      const response = await axios.get('http://localhost:8000/api/list')
+      // categories['NFTS'] = response
+      console.log(response.data)
+      if (response) setData(response.data)
+    } catch (err) {
+      if (err instanceof Error) window.alert(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    getMongo()
+  }, [])
+
   return (
     <div className="w-full  px-2 py-16 sm:px-0">
       <Tab.Group>
@@ -34,42 +58,56 @@ function Tabs() {
                 'rounded-xl bg-white p-3',
                 'focus:outline-none ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:ring-2',
               )}>
-              <ul className="flex flex-wrap">
-                {posts.map((post) => (
-                  <li key={post.id} className="w-1/4 relative rounded-md p-3 hover:bg-coolGray-100">
-                    <ul className="mt-1 space-x-1 text-xs font-normal leading-4 text-coolGray-500">
-                      <li className="w-full aspect-square	relative">
-                        <Image
-                          alt=""
-                          src="https://images.unsplash.com/photo-1650702059233-71b26365cee0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80"
-                          layout="fill"
-                          className="rounded-md"
+              {loading || !data ? (
+                <ClockIcon scale={20} />
+              ) : (
+                <ul className="flex flex-wrap">
+                  {data.map((post) => (
+                    <li
+                      onClick={() => {
+                        setIsOpen(true)
+                        setSelectedItem(post)
+                      }}
+                      key={post._id}
+                      className="w-1/4 relative rounded-md p-3 hover:bg-coolGray-100">
+                      <ul className="mt-1 space-x-1 text-xs font-normal leading-4 text-coolGray-500">
+                        <li className="w-full aspect-square	relative">
+                          <Image alt="" src={post.imageUrl} layout="fill" objectFit="cover" className="rounded-md" />
+                        </li>
+                        <li>
+                          <h3 className="text-sm font-medium leading-5">{post.title}</h3>
+                        </li>
+                        <li>{formatDistance(new Date(post.endTime), new Date(), { addSuffix: true })}</li>
+                        <li>
+                          <h3>{post.lastPrice} ETH</h3>
+                        </li>
+                      </ul>
+                      <Link href="#">
+                        <a
+                          className={classNames(
+                            'absolute inset-0 rounded-md',
+                            'focus:outline-none ring-blue-400 focus:z-10 focus:ring-2',
+                          )}
                         />
-                      </li>
-                      <li>
-                        <h3 className="text-sm font-medium leading-5">{post.title}</h3>
-                      </li>
-                      <li>{post.date}</li>
-                      <li>&middot;</li>
-                      <li>{post.commentCount} comments</li>
-                      <li>&middot;</li>
-                      <li>{post.shareCount} shares</li>
-                    </ul>
-                    <Link href="#">
-                      <a
-                        className={classNames(
-                          'absolute inset-0 rounded-md',
-                          'focus:outline-none ring-blue-400 focus:z-10 focus:ring-2',
-                        )}
-                      />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </Tab.Panel>
           ))}
         </Tab.Panels>
       </Tab.Group>
+      {selectedItem && (
+        <Modal
+          {...{
+            setIsOpen,
+            isOpen,
+            children: <DetailModal data={selectedItem} />,
+            title: selectedItem?.title ?? 'Post Detail',
+          }}
+        />
+      )}
     </div>
   )
 }

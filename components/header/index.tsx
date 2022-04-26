@@ -84,7 +84,7 @@ function classNames(...classes: string[]) {
 }
 
 function Header() {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
   const uploadClick = () => {
     setIsOpen(!isOpen)
   }

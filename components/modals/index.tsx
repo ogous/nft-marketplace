@@ -1,5 +1,7 @@
 import { useState, Fragment, FC, Dispatch } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import DetailModal from './detailModal'
+import UploadMdal from './uploadModal'
 
 interface IModal {
   title: string
@@ -63,4 +65,4 @@ const Modal: FC<IModal> = ({ title, description, children, isOpen, setIsOpen }) 
   )
 }
 
-export default Modal
+export { Modal as default, UploadMdal, DetailModal }
