@@ -92,19 +92,20 @@ function Header() {
   }
 
   useEffect(() => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-
-    console.log(provider)
     async function get() {
       try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+
         const response = await provider.send('eth_requestAccounts', [])
         console.log('request ETH', response)
         const signer = provider.getSigner()
         console.log('SIGNER', signer)
+        console.log('Account:', await signer.getAddress())
       } catch (e) {
         if (e instanceof Error) console.log(e.message)
       }
     }
+    get()
   }, [])
 
   // if (typeof window.ethereum !== 'undefined') {

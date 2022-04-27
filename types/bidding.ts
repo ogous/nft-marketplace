@@ -1,5 +1,5 @@
 interface MongoBase {
-  _id: string
+  _id?: string
 }
 
 interface IBidding extends MongoBase {

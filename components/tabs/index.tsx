@@ -9,15 +9,17 @@ import { ClockIcon } from '@heroicons/react/solid'
 import { formatDistance } from 'date-fns'
 import Modal, { DetailModal } from '../modals/index'
 import classNames from '../../utils/className'
+import { getList } from '../../pages/api/methods'
 
 function Tabs() {
   const [data, setData] = useState<IBidding[]>()
   const [loading, setLoading] = useState(true)
   const [selectedItem, setSelectedItem] = useState<IBidding>()
   const [isOpen, setIsOpen] = useState(false)
+
   async function getMongo() {
     try {
-      const response = await axios.get('https://nft-backend-fsl3dqjtcq-ey.a.run.app/api/list')
+      const response = await getList()
       // categories['NFTS'] = response
       console.log(response.data)
       if (response) setData(response.data)

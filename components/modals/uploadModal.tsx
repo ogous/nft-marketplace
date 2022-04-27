@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import axios from 'axios'
+import { createNFT } from '../../pages/api/methods'
+import { IBidding } from '../../types/bidding'
+
 type Inputs = {
   imageUrl: string
   title: string
@@ -20,7 +23,7 @@ export default function UploadModal() {
     setLoading(true)
 
     try {
-      axios.post('https://nft-backend-fsl3dqjtcq-ey.a.run.app/api/create', data)
+      await createNFT(data)
     } catch (error) {
       if (error instanceof Error) console.log(error.message)
     } finally {
