@@ -1,5 +1,5 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -21,6 +21,8 @@ import {
 import { ChevronDownIcon } from '@heroicons/react/solid'
 import Modal from '../modals'
 import UploadModal from '../modals/uploadModal'
+import { ethers } from 'ethers'
+
 const solutions = [
   {
     name: 'Analytics',
@@ -89,10 +91,26 @@ function Header() {
     setIsOpen(!isOpen)
   }
 
-  if (typeof window.ethereum !== 'undefined') {
-    console.log('MetaMask is installed!')
-    console.log(window.ethereum)
-  }
+  useEffect(() => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+    console.log(provider)
+    async function get() {
+      try {
+        const response = await provider.send('eth_requestAccounts', [])
+        console.log('request ETH', response)
+        const signer = provider.getSigner()
+        console.log('SIGNER', signer)
+      } catch (e) {
+        if (e instanceof Error) console.log(e.message)
+      }
+    }
+  }, [])
+
+  // if (typeof window.ethereum !== 'undefined') {
+  //   console.log('MetaMask is installed!')
+  //   console.log(window.ethereum)
+  // }
 
   async function connectEtherium() {
     console.log('try to connect etherium')
