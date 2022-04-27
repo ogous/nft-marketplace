@@ -89,6 +89,21 @@ function Header() {
     setIsOpen(!isOpen)
   }
 
+  if (typeof window.ethereum !== 'undefined') {
+    console.log('MetaMask is installed!')
+    console.log(window.ethereum)
+  }
+
+  async function connectEtherium() {
+    console.log('try to connect etherium')
+    // try {
+    //   const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
+    //   console.log(accounts)
+    // } catch (err) {
+    //   if (err instanceof Error) console.log(err.message)
+    // }
+  }
+
   return (
     <Popover className="relative bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -143,7 +158,9 @@ function Header() {
                     <Popover.Panel className="absolute z-10 -ml-4 mt-3 transform px-2 w-screen max-w-md sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2">
                       <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                         <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
-                          <a href="#" className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50">
+                          <a
+                            onClick={connectEtherium}
+                            className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50">
                             <ChartBarIcon className="flex-shrink-0 h-6 w-6 text-indigo-600" aria-hidden="true" />
                             <div className="ml-4">
                               <p className="text-base font-medium text-gray-900">Metamask</p>

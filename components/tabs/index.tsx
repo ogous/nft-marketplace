@@ -17,7 +17,7 @@ function Tabs() {
   const [isOpen, setIsOpen] = useState(false)
   async function getMongo() {
     try {
-      const response = await axios.get('http://localhost:8000/api/list')
+      const response = await axios.get('https://nft-backend-fsl3dqjtcq-ey.a.run.app/api/list')
       // categories['NFTS'] = response
       console.log(response.data)
       if (response) setData(response.data)

@@ -20,7 +20,7 @@ export default function UploadModal() {
     setLoading(true)
 
     try {
-      axios.post('http://localhost:8000/api/create', data)
+      axios.post('https://nft-backend-fsl3dqjtcq-ey.a.run.app/api/create', data)
     } catch (error) {
       if (error instanceof Error) console.log(error.message)
     } finally {
