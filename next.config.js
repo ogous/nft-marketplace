@@ -2,10 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['tailwindui.com', 'images.unsplash.com'],
+    domains: ['tailwindui.com', 'images.unsplash.com', 'lh3.googleusercontent.com'],
   },
   env: {
-    API_URL: 'https://nft-backend-fsl3dqjtcq-ey.a.run.app',
+    API_URL: process.env.API_URL,
   },
 }
 

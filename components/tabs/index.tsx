@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react'
 import { Tab } from '@headlessui/react'
-import Link from 'next/link'
-import Image from 'next/image'
-import categories from './data'
-import axios from 'axios'
 import type { IBidding } from '../../types/bidding'
-import { ClockIcon } from '@heroicons/react/solid'
-import { formatDistance } from 'date-fns'
 import Modal, { DetailModal } from '../modals/index'
 import classNames from '../../utils/className'
 import { getList } from '../../pages/api/methods'
+import TabItem from './tabItem'
+import Button, { ButtonSize, ButtonVariant } from '../../theme/button'
 
 function Tabs() {
+  const categories = {
+    art: 'Art',
+    celebrities: 'Celebrities',
+    gaming: 'Gaming',
+    sport: 'Sport',
+    music: 'Music',
+    crypto: 'Crypto',
+  }
+
   const [data, setData] = useState<IBidding[]>()
   const [loading, setLoading] = useState(true)
   const [selectedItem, setSelectedItem] = useState<IBidding>()
@@ -35,17 +40,20 @@ function Tabs() {
   }, [])
 
   return (
-    <div className="w-full  px-2 py-16 sm:px-0">
+    <div className="w-full p-6 bg-gray-100">
+      <h2 className="text-xl mb-4 tracking-tight font-extrabold text-gray-900">
+        <span className="block xl:inline">DISCOVER MORE NFT</span>
+      </h2>
       <Tab.Group>
-        <Tab.List className="flex max-w-md space-x-1 rounded-xl bg-blue-900/20 p-1">
-          {Object.keys(categories).map((category) => (
+        <Tab.List className="flex max-w-lg space-x-1 rounded-full bg-black/5 p-1">
+          {Object.values(categories).map((category) => (
             <Tab
               key={category}
               className={({ selected }) =>
                 classNames(
-                  'w-full  rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700',
-                  'focus:outline-none ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:ring-2',
-                  selected ? 'bg-white shadow' : 'text-blue-100 hover:bg-white/[0.12] hover:text-white',
+                  'w-full rounded-full py-2.5 text-sm font-medium leading-5',
+                  'focus:outline-none ring-white ring-opacity-60 ring-offset-2 ring-offset-primary/[0.12] focus:ring-2',
+                  selected ? 'text-white bg-primary shadow' : 'text-gray-500 hover:bg-primary/[0.12] hover:text-black',
                 )
               }>
               {category}
@@ -53,46 +61,16 @@ function Tabs() {
           ))}
         </Tab.List>
         <Tab.Panels className="mt-2">
-          {Object.values(categories).map((posts, idx) => (
+          {Object.keys(categories).map((category) => (
             <Tab.Panel
-              key={idx}
-              className={classNames(
-                'rounded-xl bg-white p-3',
-                'focus:outline-none ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:ring-2',
-              )}>
-              {loading || !data ? (
-                <ClockIcon scale={20} />
-              ) : (
-                <ul className="flex flex-wrap">
+              key={category}
+              className={
+                'focus:outline-none ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:ring-2'
+              }>
+              {loading || !data ? null : (
+                <ul className="flex grid grid-cols-4 gap-2">
                   {data.map((post) => (
-                    <li
-                      onClick={() => {
-                        setIsOpen(true)
-                        setSelectedItem(post)
-                      }}
-                      key={post._id}
-                      className="w-1/4 relative rounded-md p-3 hover:bg-coolGray-100">
-                      <ul className="mt-1 space-x-1 text-xs font-normal leading-4 text-coolGray-500">
-                        <li className="w-full aspect-square	relative">
-                          <Image alt="" src={post.imageUrl} layout="fill" objectFit="cover" className="rounded-md" />
-                        </li>
-                        <li>
-                          <h3 className="text-sm font-medium leading-5">{post.title}</h3>
-                        </li>
-                        <li>{formatDistance(new Date(post.endTime), new Date(), { addSuffix: true })}</li>
-                        <li>
-                          <h3>{post.lastPrice} ETH</h3>
-                        </li>
-                      </ul>
-                      <Link href="#">
-                        <a
-                          className={classNames(
-                            'absolute inset-0 rounded-md',
-                            'focus:outline-none ring-blue-400 focus:z-10 focus:ring-2',
-                          )}
-                        />
-                      </Link>
-                    </li>
+                    <TabItem key={post._id} {...{ post, setIsOpen, setSelectedItem }} />
                   ))}
                 </ul>
               )}
@@ -100,6 +78,9 @@ function Tabs() {
           ))}
         </Tab.Panels>
       </Tab.Group>
+      <div className="mt-6 items-center inline-block">
+        <Button variant={ButtonVariant.Secondary} size={ButtonSize.Medium} title="More NFTs" />
+      </div>
       {selectedItem && (
         <Modal
           {...{

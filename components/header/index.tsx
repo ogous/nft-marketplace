@@ -1,89 +1,13 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useState, useEffect } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import {
-  BookmarkAltIcon,
-  CalendarIcon,
-  ChartBarIcon,
-  CursorClickIcon,
-  MenuIcon,
-  PhoneIcon,
-  PlayIcon,
-  RefreshIcon,
-  ShieldCheckIcon,
-  SupportIcon,
-  ViewGridIcon,
-  XIcon,
-} from '@heroicons/react/outline'
-import { ChevronDownIcon } from '@heroicons/react/solid'
+import { ChartBarIcon, ViewGridIcon } from '@heroicons/react/outline'
 import Modal from '../modals'
 import UploadModal from '../modals/uploadModal'
 import { ethers } from 'ethers'
-
-const solutions = [
-  {
-    name: 'Analytics',
-    description: 'Get a better understanding of where your traffic is coming from.',
-    href: '#',
-    icon: ChartBarIcon,
-  },
-  {
-    name: 'Engagement',
-    description: 'Speak directly to your customers in a more meaningful way.',
-    href: '#',
-    icon: CursorClickIcon,
-  },
-  { name: 'Security', description: "Your customers' data will be safe and secure.", href: '#', icon: ShieldCheckIcon },
-  {
-    name: 'Integrations',
-    description: "Connect with third-party tools that you're already using.",
-    href: '#',
-    icon: ViewGridIcon,
-  },
-  {
-    name: 'Automations',
-    description: 'Build strategic funnels that will drive your customers to convert',
-    href: '#',
-    icon: RefreshIcon,
-  },
-]
-const callsToAction = [
-  { name: 'Watch Demo', href: '#', icon: PlayIcon },
-  { name: 'Contact Sales', href: '#', icon: PhoneIcon },
-]
-const resources = [
-  {
-    name: 'Help Center',
-    description: 'Get all of your questions answered in our forums or contact support.',
-    href: '#',
-    icon: SupportIcon,
-  },
-  {
-    name: 'Guides',
-    description: 'Learn how to maximize our platform to get the most out of it.',
-    href: '#',
-    icon: BookmarkAltIcon,
-  },
-  {
-    name: 'Events',
-    description: 'See what meet-ups and other events we might be planning near you.',
-    href: '#',
-    icon: CalendarIcon,
-  },
-  { name: 'Security', description: 'Understand how we take your privacy seriously.', href: '#', icon: ShieldCheckIcon },
-]
-const recentPosts = [
-  { id: 1, name: 'Boost your conversion rate', href: '#' },
-  { id: 2, name: 'How to use search engine optimization to drive traffic to your site', href: '#' },
-  { id: 3, name: 'Improve your customer experience', href: '#' },
-]
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
+import Button, { ButtonSize, ButtonVariant } from '../../theme/button'
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false)
@@ -108,11 +32,6 @@ function Header() {
     get()
   }, [])
 
-  // if (typeof window.ethereum !== 'undefined') {
-  //   console.log('MetaMask is installed!')
-  //   console.log(window.ethereum)
-  // }
-
   async function connectEtherium() {
     console.log('try to connect etherium')
     // try {
@@ -125,9 +44,9 @@ function Header() {
 
   return (
     <Popover className="relative bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
-          <div className="flex justify-start lg:w-0 lg:flex-1">
+          <div className="flex justify-start items-center lg:w-0 lg:flex-1">
             <Link href="#">
               <a>
                 <span className="sr-only">Nfters</span>
@@ -136,35 +55,61 @@ function Header() {
                 </div>
               </a>
             </Link>
+            <Link href={'#'}>
+              <a className="ml-6 text-base font-medium text-gray-500 hover:text-gray-900">Marketplace</a>
+            </Link>
+
+            <Link href={'#'}>
+              <a className="ml-6 text-base font-medium text-gray-500 hover:text-gray-900">Resource</a>
+            </Link>
+            <Link href={'#'}>
+              <a className="ml-6 text-base font-medium text-gray-500 hover:text-gray-900">About</a>
+            </Link>
           </div>
 
-          <Link href={'#'}>
-            <a
-              className={
-                'group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-              }>
-              <span>Marketplace</span>
-            </a>
-          </Link>
+          <div className="hidden md:flex items-center justify-end lg:w-0">
+            <form>
+              <div className="relative w-52">
+                <input
+                  type="search"
+                  id="default-search"
+                  className="block w-full p-4 pl-4 text-sm text-gray-900 border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 "
+                  placeholder="Search NFTs..."
+                  required={true}
+                />
+                <button
+                  type="submit"
+                  className="text-white absolute right-2.5 bottom-2.5 bg-gray-200 hover:bg-primary focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-4 py-2 ">
+                  <svg
+                    className="w-5 h-5 text-gray-500 hover:text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </button>
+              </div>
+            </form>
 
-          <a href="#" className="text-base font-medium text-gray-500 hover:text-gray-900">
-            Resource
-          </a>
-          <a href="#" className="text-base font-medium text-gray-500 hover:text-gray-900">
-            About
-          </a>
-          <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-            <Popover.Button
-              onClick={uploadClick}
-              className="whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary hover:bg-indigo-700">
-              Upload
+            <Popover.Button onClick={uploadClick} className="ml-6">
+              <Button disabled title="Upload" size={ButtonSize.Medium} variant={ButtonVariant.Primary} />
             </Popover.Button>
-            <Modal {...{ setIsOpen, isOpen, title: 'Upload images', children: <UploadModal /> }} />
+            <Modal {...{ setIsOpen, isOpen, title: 'Create Asset', children: <UploadModal /> }} />
             <Popover className="relative">
               {({ open }) => (
                 <>
-                  <Popover.Button className="whitespace-nowrap ml-8 border-primary border-2 text-base font-medium px-4 py-2  rounded-md shadow-sm text-gray-500 hover:text-gray-900">
-                    Connect Wallet
+                  <Popover.Button className="ml-6">
+                    <Button
+                      disabled
+                      title="Connect Wallet"
+                      size={ButtonSize.Medium}
+                      variant={ButtonVariant.Secondary}
+                    />
                   </Popover.Button>
                   <Transition
                     as={Fragment}

@@ -35,7 +35,7 @@ const Modal: FC<IModal> = ({ title, description, children, isOpen, setIsOpen }) 
               leave="ease-in duration-200"
               leaveFrom="opacity-100"
               leaveTo="opacity-0">
-              <Dialog.Overlay className="fixed inset-0" />
+              <Dialog.Overlay className="fixed inset-0 bg-black/50" />
             </Transition.Child>
 
             {/* This element is to trick the browser into centering the modal contents. */}

@@ -8,11 +8,14 @@ export async function getList() {
   })
 }
 
-export async function createNFT(data: IBidding) {
+export async function createNFT(data: FormData) {
   return baseAPI({
     url: 'api/create',
     method: 'POST',
     data,
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
   })
 }
 

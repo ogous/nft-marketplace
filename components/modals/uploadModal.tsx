@@ -1,14 +1,24 @@
 import React, { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import axios from 'axios'
 import { createNFT } from '../../pages/api/methods'
 import { IBidding } from '../../types/bidding'
 
+enum BiddingCategory {
+  art = 'art',
+  celebrities = 'celebrities',
+  gaming = 'gaming',
+  sport = 'sport',
+  music = 'music',
+  crypto = 'crypto',
+}
+
 type Inputs = {
-  imageUrl: string
+  image: string
   title: string
-  endTime: Date
-  lastPrice: number
+  endTime: string
+  lastPrice: string
+  user: string
+  category: BiddingCategory
 }
 
 export default function UploadModal() {
@@ -21,56 +31,114 @@ export default function UploadModal() {
   const [loading, setLoading] = useState(false)
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true)
-
+    console.log(data.image)
     try {
-      await createNFT(data)
+      // console.log(data)
+      // const fuck = new FormData()
+      // fuck.append('image', data.image)
+      // fuck.append('title', data.title)
+      // fuck.append('endTime', data.endTime)
+      // fuck.append('lastPrice', data.lastPrice)
+      // fuck.append('user', data.user)
+      // fuck.append('category', data.category)
+      // console.log(fuck)
+      // await createNFT(data.image)
     } catch (error) {
-      if (error instanceof Error) console.log(error.message)
+      if (error instanceof Error) window.alert(error.message)
     } finally {
       setLoading(false)
     }
     console.log(data)
   }
 
-  console.log(watch('lastPrice')) // watch input value by passing the name of it
-
   return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <fieldset>
-        {/* register your input into the hook by invoking the "register" function */}
-        <label htmlFor="imageUrl">Image URL:</label>
-        <input
-          id="imageUrl"
-          className="'ring-2 ring-offset-2 ring-offset-sky-300 ring-white ring-opacity-60' border rounded-md hover:border-blue-200"
-          defaultValue="https://images.unsplash.com/photo-1508138221679-760a23a2285b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8cmFuZG9tfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60"
-          {...register('imageUrl')}
-        />
-        {errors.imageUrl && <span>Title is required</span>}
-        <label htmlFor="title">Title:</label>
-        <input
-          className="'ring-2 ring-offset-2 ring-offset-sky-300 ring-white ring-opacity-60' border rounded-md hover:border-blue-200"
-          {...register('title', { required: true })}
-        />
-        {errors.title && <span>Title is required</span>}
-        <label htmlFor="endTime">End Time:</label>
-        <input
-          className="'ring-2 ring-offset-2 ring-offset-sky-300 ring-white ring-opacity-60' border rounded-md hover:border-blue-200"
-          {...register('endTime', { required: true })}
-          defaultValue="2000-01-01T00:00:00.000Z"
-        />
-        {errors.title && <span>End time is required</span>}
-        <input type="hidden" value={0} {...register('lastPrice', { required: true })} />
-
-        {loading ? (
-          <span>Loading</span>
-        ) : (
+    <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data" method="post">
+      <div className="mb-6">
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-900 " htmlFor="image">
+            Upload Image
+          </label>
           <input
-            type="submit"
-            className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+            aria-describedby="image_help"
+            id="image"
+            type="text"
+            {...register('image', { required: true })}
+            required
           />
-        )}
-      </fieldset>
+          {errors.image && <span className="text-red">Image file is required</span>}
+          <p className="mt-1 text-sm text-gray-500 " id="image_help">
+            {/* SVG, PNG, JPG or GIF */}
+            Add image URL, image upload is coming soon...
+          </p>
+        </div>
+      </div>
+      <div className="mb-6">
+        <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 ">
+          Title
+        </label>
+        <input
+          type="text"
+          id="title"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+          placeholder="KingCrypto etc."
+          {...register('title', { required: true })}
+          required
+        />
+        {errors.title && <span className="text-red">Title is required</span>}
+      </div>
+      <div className="mb-6">
+        <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 ">
+          Category
+        </label>
+        <select
+          required
+          {...register('category', { required: true })}
+          id="category"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+          <option value={''}>Select a category</option>
+          <option value="art">Art</option>
+          <option value="celebrities">Celebrities</option>
+          <option value="gaming">Gaming</option>
+          <option value="sport">sport</option>
+          <option value="music">Music</option>
+          <option value="crypto">Crypto</option>
+        </select>
+        {errors.category && <span className="text-red">Category is required</span>}
+      </div>
+      <div className="mb-6">
+        <label htmlFor="last_name" className="block mb-2 text-sm font-medium text-gray-900 ">
+          End Time
+        </label>
+        <input
+          type="text"
+          id="last_name"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+          placeholder={new Date().toUTCString()}
+          defaultValue={new Date().toUTCString()}
+          {...register('endTime', { required: true })}
+          required
+        />
+        <p className="mt-1 text-sm text-gray-500 " id="image_help">
+          Enter time UTC string, select Date and Time coming soon...
+        </p>
+      </div>
+      <input type="hidden" value={0} {...register('lastPrice', { required: true })} />
+      <input
+        type="hidden"
+        value={'0xd31fe3b2c23bbf7301deb5888f0627482a7622b6'}
+        {...register('user', { required: true })}
+      />
+
+      {loading ? (
+        <span>Loading</span>
+      ) : (
+        <input
+          type="submit"
+          className="w-full flex justify-center h-12 px-8 text-xl font-medium text-white bg-primary border border-transparent rounded-full hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+        />
+      )}
     </form>
   )
 }

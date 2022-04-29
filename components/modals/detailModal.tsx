@@ -2,11 +2,12 @@ import React, { useState } from 'react'
 import { IBidding } from '../../types/bidding'
 import Link from 'next/link'
 import Image from 'next/image'
-import { formatDistance } from 'date-fns'
 import classNames from '../../utils/className'
+import useCountDown from '../../hooks/countdown'
 
 export default function DetailModal({ data }: { data: IBidding }) {
   const [loading, setLoading] = useState(false)
+  const { countDownText, isBiddable } = useCountDown(data.endTime)
 
   return (
     <div key={data._id} className="w-full relative rounded-md p-3 hover:bg-coolGray-100">
@@ -17,19 +18,19 @@ export default function DetailModal({ data }: { data: IBidding }) {
         <li>
           <h3 className="text-sm font-medium leading-5">{data.title}</h3>
         </li>
-        <li>{formatDistance(new Date(data.endTime), new Date(), { addSuffix: true })}</li>
+        <li className={classNames(isBiddable ? 'text-black' : 'text-gray-300	')}>{countDownText}</li>
         <li>
           <h3>{data.lastPrice} ETH</h3>
         </li>
       </ul>
-      <Link href="#">
-        <a
-          className={classNames(
-            'absolute inset-0 rounded-md',
-            'focus:outline-none ring-blue-400 focus:z-10 focus:ring-2',
-          )}
+
+      {!isBiddable ? null : (
+        <input
+          title="Submit Price"
+          type="submit"
+          className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
         />
-      </Link>
+      )}
     </div>
   )
 }
