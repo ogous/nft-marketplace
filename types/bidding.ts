@@ -5,8 +5,11 @@ interface MongoBase {
 interface IBidding extends MongoBase {
   imageUrl: string
   title: string
-  endTime: Date
-  lastPrice: number
+  endTime: string
+  lastPrice: string
+  category: string
+  owner: string
+  creator: string
 }
 
 export type { IBidding }

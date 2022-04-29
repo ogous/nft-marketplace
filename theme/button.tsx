@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import classNames from '../utils/className'
+import Loader from './loader'
 
 export enum ButtonSize {
   Small,
@@ -18,14 +19,16 @@ interface IButton {
   size?: ButtonSize
   variant?: ButtonVariant
   disabled?: boolean
+  loading?: boolean
 }
 
 export default function Button({
   title,
-  link = '#',
+  link = '',
   size = ButtonSize.Medium,
   variant = ButtonVariant.Primary,
   disabled = false,
+  loading = false,
 }: IButton) {
   const sizeMap = {
     [ButtonSize.Small]: 'h-9 px-6',
@@ -50,12 +53,12 @@ export default function Button({
   )
 
   if (disabled) {
-    return <span className={classes}>{title}</span>
+    return <span className={classes}>{loading ? <Loader /> : title}</span>
   }
 
   return (
     <Link href={link}>
-      <a className={classes}>{title}</a>
+      <a className={classes}>{loading ? <Loader /> : title}</a>
     </Link>
   )
 }

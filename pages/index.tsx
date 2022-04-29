@@ -19,7 +19,8 @@ const Home: NextPage = () => {
       <Section />
       <Section2 />
       <Tabs />
-      <Tabs2 />
+      <Tabs2 collection="ape" />
+      <Tabs2 collection="god" />
       <Footer />
     </div>
   )

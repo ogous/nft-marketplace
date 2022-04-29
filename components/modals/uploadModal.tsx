@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { createNFT } from '../../pages/api/methods'
+import { createNFT } from '../../api/methods'
 import { IBidding } from '../../types/bidding'
 
 enum BiddingCategory {
@@ -25,7 +25,7 @@ export default function UploadModal() {
   const {
     register,
     handleSubmit,
-    watch,
+    // watch,
     formState: { errors },
   } = useForm<Inputs>()
   const [loading, setLoading] = useState(false)
