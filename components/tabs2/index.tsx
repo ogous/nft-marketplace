@@ -3,16 +3,19 @@ import Modal, { DetailModal } from '../modals/index'
 import Button, { ButtonSize, ButtonVariant } from '../../theme/button'
 import axios from 'axios'
 import TabItem from './tabItem'
+import NFTModal from '../modals/nftModal'
 
-class NFTModel {
-  public id: Pick<INFT, 'id'>
-  public imageUrl: Pick<INFT, 'imageUrl'>
-  public name: Pick<INFT, 'name'>
-  public description: Pick<INFT, 'description'>
-  public address: Pick<INFT, 'address'>
-  public numberOfSales: Pick<INFT, 'numberOfSales'>
-  public payoutAddress: Pick<INFT, 'payoutAddress'>
-  // public totalPrice: Pick<INFT, 'totalPrice'>
+export class NFTModel {
+  public id: INFT['id']
+  public imageUrl: INFT['imageUrl']
+  public name: INFT['name']
+  public description: INFT['description']
+  public address: INFT['address']
+  public numberOfSales: INFT['numberOfSales']
+  public traits: INFT['traits']
+  public price: INFT['price']
+  public collection: INFT['collection']
+  public tokenId: INFT['tokenId']
 
   constructor(data: any) {
     this.id = data.id
@@ -21,8 +24,19 @@ class NFTModel {
     this.description = data.description
     this.address = data.asset_contract.address
     this.numberOfSales = data.num_sales
-    this.payoutAddress = data.asset_contract.payout_address
-    // this.totalPrice = data.last_sale.total_price
+    this.traits = data.traits.map((item: any) => ({
+      type: item.trait_type,
+      value: item.value,
+      count: item.trait_count,
+    }))
+    this.price = Number(data.last_sale.payment_token.eth_price)
+    this.collection = {
+      image: data.collection.image_url,
+      name: data.collection.name,
+      payoutAddress: data.collection.payout_address,
+      slug: data.collection.slug,
+    }
+    this.tokenId = data.token_id
   }
 }
 
@@ -35,7 +49,15 @@ export interface INFT {
   createDate: string
   numberOfSales: string
   payoutAddress: string
-  // totalPrice: string
+  collection: {
+    image: string
+    name: string
+    payoutAddress: string
+    slug: string
+  }
+  traits: { type: string; value: string; count: number }[]
+  price: number
+  tokenId: string
 }
 
 function Tabs2({ collection }: { collection: 'ape' | 'god' }) {
@@ -116,16 +138,16 @@ function Tabs2({ collection }: { collection: 'ape' | 'god' }) {
           />
         </a>
       </div>
-      {/* {selectedItem && (
+      {selectedItem && (
         <Modal
           {...{
             setIsOpen,
             isOpen,
-            children: <DetailModal data={selectedItem} />,
-            title: selectedItem?.name ?? 'Asset Detail',
+            children: <NFTModal data={selectedItem} />,
+            title: selectedItem?.name ? selectedItem?.name : selectedItem.collection.name + ' #' + selectedItem.tokenId,
           }}
         />
-      )} */}
+      )}
     </div>
   )
 }

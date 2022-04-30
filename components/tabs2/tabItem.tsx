@@ -16,13 +16,7 @@ export default function TabItem({ post, setIsOpen, setSelectedItem }: ITabItem) 
   const { countDownText, isBiddable } = useCountDown(post.createDate)
 
   return (
-    <div
-      onClick={() => {
-        setIsOpen(true)
-        setSelectedItem(post)
-      }}
-      key={post.id}
-      className="w-full relative rounded-md p-3 bg-white hover:bg-coolGray-100">
+    <div className="w-full relative rounded-md p-3 bg-white hover:bg-coolGray-100">
       <ul className="mt-1 space-x-1 text-xs font-normal leading-4 text-coolGray-500">
         <li className="w-full aspect-square	relative">
           {post.imageUrl ? (
@@ -35,7 +29,9 @@ export default function TabItem({ post, setIsOpen, setSelectedItem }: ITabItem) 
         </li>
 
         <li>
-          <h3 className="text-sm font-medium leading-5 mt-4">{post.name}</h3>
+          <h3 className="text-sm font-medium leading-5 mt-4">
+            {post.name ?? post.collection.name + ' #' + post.tokenId}
+          </h3>
         </li>
         <li className="flex lign-items mt-2">
           <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
@@ -60,14 +56,16 @@ export default function TabItem({ post, setIsOpen, setSelectedItem }: ITabItem) 
           </Link>
         </li>
       </ul>
-      <Link href="#">
-        <a
-          className={classNames(
-            'absolute inset-0 rounded-md',
-            'focus:outline-none ring-blue-400 focus:z-10 focus:ring-2',
-          )}
-        />
-      </Link>
+      <a
+        onClick={() => {
+          setIsOpen(true)
+          setSelectedItem(post)
+        }}
+        className={classNames(
+          'absolute inset-0 rounded-md cursor-pointer',
+          'focus:outline-none ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:ring-2',
+        )}
+      />
     </div>
   )
 }
