@@ -1,13 +1,13 @@
-import { IBidding } from '../../types/bidding'
+import { IAsset } from '../../types/asset'
 import Image from 'next/image'
 import { Dispatch } from 'react'
 import classNames from '../../utils/className'
 import useCountDown from '../../hooks/countdown'
 
 interface ITabItem {
-  post: IBidding
+  post: IAsset
   setIsOpen: Dispatch<boolean>
-  setSelectedItem: Dispatch<IBidding>
+  setSelectedItem: Dispatch<IAsset>
 }
 
 export default function TabItem({ post, setIsOpen, setSelectedItem }: ITabItem) {
@@ -31,7 +31,7 @@ export default function TabItem({ post, setIsOpen, setSelectedItem }: ITabItem) 
               />
             </svg>
 
-            <span className="text-[#00AC4F] ml-2 font-bold">{post.lastPrice} ETH</span>
+            <span className="text-[#00AC4F] ml-2 font-bold">{post.lastSale?.price ?? 0} ETH</span>
           </div>
           <div>
             <span className="bg-gray-100 rounded-full py-2 px-4 inline-block">

@@ -1,15 +1,15 @@
 import baseAPI from '.'
-import { IBidding } from '../types/bidding'
+import { IAsset, ILastSale } from '../types/asset'
 
-export async function getList({ offset, limit = 16, category }: { offset: number; limit?: number; category?: string }) {
-  return baseAPI<IBidding[]>({
+export async function list({ offset, limit = 16, category }: { offset: number; limit?: number; category?: string }) {
+  return baseAPI<IAsset[]>({
     url: 'api/list',
     method: 'POST',
     data: { offset, limit, category },
   })
 }
 
-export async function createNFT(data: IBidding) {
+export async function create(data: IAsset) {
   return baseAPI({
     url: 'api/create',
     method: 'POST',
@@ -18,13 +18,14 @@ export async function createNFT(data: IBidding) {
 }
 
 interface IMakeBidReq {
-  _id: Pick<IBidding, '_id'>
-  lastPrice: Pick<IBidding, 'lastPrice'>
-  owner: Pick<IBidding, 'owner'>
+  id: IAsset['_id']
+  price: number
+  user: string
 }
+
 export async function makeBid(data: IMakeBidReq) {
   return baseAPI({
-    url: 'api/bid',
+    url: 'api/makeBid',
     method: 'POST',
     data,
   })

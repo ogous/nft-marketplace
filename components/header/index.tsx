@@ -2,10 +2,7 @@ import { Fragment, useState, useEffect } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import Image from 'next/image'
 import Link from 'next/link'
-
-import { ChartBarIcon, ViewGridIcon } from '@heroicons/react/outline'
-import Modal from '../modals'
-import UploadModal from '../modals/uploadModal'
+import Modal, { UploadModal } from '../modals'
 import { ethers } from 'ethers'
 import Button, { ButtonSize, ButtonVariant } from '../../theme/button'
 
@@ -32,14 +29,12 @@ function Header() {
     get()
   }, [])
 
-  async function connectEtherium() {
-    console.log('try to connect etherium')
-    // try {
-    //   const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
-    //   console.log(accounts)
-    // } catch (err) {
-    //   if (err instanceof Error) console.log(err.message)
-    // }
+  async function connectEthereum() {
+    console.log('try to connect ethereum')
+  }
+
+  async function connectPolkadot() {
+    console.log('try to connect polkadot')
   }
 
   return (
@@ -99,7 +94,7 @@ function Header() {
             <Popover.Button onClick={uploadClick} className="ml-6">
               <Button disabled title="Upload" size={ButtonSize.Medium} variant={ButtonVariant.Primary} />
             </Popover.Button>
-            <Modal {...{ setIsOpen, isOpen, title: 'Create Asset', children: <UploadModal /> }} />
+            <Modal {...{ setIsOpen, isOpen, title: 'Create an asset', children: <UploadModal /> }} />
             <Popover className="relative">
               {({ open }) => (
                 <>
@@ -119,23 +114,29 @@ function Header() {
                     leave="transition ease-in duration-150"
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1">
-                    <Popover.Panel className="absolute z-10 -ml-4 mt-3 transform px-2 w-screen max-w-md sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2">
+                    <Popover.Panel className="absolute z-10 mt-3 transform px-2 right-0 -ml-12">
                       <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
-                        <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
+                        <div className="relative grid gap-6 bg-white p-6">
                           <a
-                            onClick={connectEtherium}
-                            className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50">
-                            <ChartBarIcon className="flex-shrink-0 h-6 w-6 text-indigo-600" aria-hidden="true" />
-                            <div className="ml-4">
+                            onClick={connectEthereum}
+                            className="py-3 p-6 flex items-center cursor-pointer rounded-lg hover:bg-gray-50">
+                            <div className="h-8 w-8">
+                              <Image src="/metamask.svg" width={32} height={32} alt="Metamask" />
+                            </div>
+                            <div className="ml-6">
                               <p className="text-base font-medium text-gray-900">Metamask</p>
-                              <p className="mt-1 text-sm text-gray-500">Metamask is wonderfull</p>
+                              <p className="mt-1 text-xs text-gray-300 whitespace-nowrap">Connect with Metamask</p>
                             </div>
                           </a>
-                          <a href="#" className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50">
-                            <ViewGridIcon className="flex-shrink-0 h-6 w-6 text-indigo-600" aria-hidden="true" />
-                            <div className="ml-4">
+                          <a
+                            onClick={connectPolkadot}
+                            className=" py-3 p-6 flex items-center cursor-pointer rounded-lg hover:bg-gray-50">
+                            <div className="h-8 w-8">
+                              <Image src="/polkadot.svg" width={32} height={32} alt="Polkadot" />
+                            </div>
+                            <div className="ml-6">
                               <p className="text-base font-medium text-gray-900">Polkadot</p>
-                              <p className="mt-1 text-sm text-gray-500">Polkadot is wonderfull</p>
+                              <p className="mt-1 text-xs text-gray-300 whitespace-nowrap">Connect with Polkadot</p>
                             </div>
                           </a>
                         </div>

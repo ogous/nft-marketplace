@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Tab } from '@headlessui/react'
-import type { IBidding } from '../../types/bidding'
+import type { IAsset } from '../../types/asset'
 import Modal, { DetailModal } from '../modals/index'
 import classNames from '../../utils/className'
-import { getList } from '../../api/methods'
+import { list } from '../../api/methods'
 import TabItem from './tabItem'
 import Button, { ButtonSize, ButtonVariant } from '../../theme/button'
 
@@ -19,9 +19,9 @@ function Tabs() {
   } as const
   type Categories = typeof categories[keyof typeof categories]
 
-  const [data, setData] = useState<IBidding[]>([])
+  const [data, setData] = useState<IAsset[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedItem, setSelectedItem] = useState<IBidding>()
+  const [selectedItem, setSelectedItem] = useState<IAsset>()
   const [selectedCategory, setSelectedCategory] = useState<Categories>()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [currentIndex, setCurrentIndex] = useState<number>(0)
@@ -32,7 +32,7 @@ function Tabs() {
       setLoading(true)
 
       try {
-        const response = await getList({ offset, category })
+        const response = await list({ offset, category })
 
         if (response) {
           setData((prevData) => prevData.concat(response))
@@ -50,16 +50,9 @@ function Tabs() {
   }, [currentIndex, selectedCategory])
 
   function handleMoreButton() {
+    if (endReached) return
     setCurrentIndex(currentIndex + 1)
   }
-
-  useEffect(() => {
-    console.log('HEYYYYY', data)
-  }, [data])
-
-  useEffect(() => {
-    console.log('selectedCategory', selectedCategory)
-  }, [selectedCategory])
 
   return (
     <div className="w-full p-6 bg-gray-100">
@@ -92,18 +85,18 @@ function Tabs() {
         <Tab.Panels className="mt-2">
           {Object.keys(categories).map((category) => (
             <Tab.Panel key={category}>
-              <ul className="flex grid grid-cols-4 gap-2">
+              <div className="flex grid grid-cols-4 gap-2">
                 {data.map((post) => (
                   <TabItem key={post._id} {...{ post, setIsOpen, setSelectedItem }} />
                 ))}
-              </ul>
+              </div>
             </Tab.Panel>
           ))}
         </Tab.Panels>
       </Tab.Group>
       <div className="mt-6 justify-center grid">
         <a
-          className={classNames(endReached ? 'cursor-not-allowed opacity-50' : '', 'cursor-pointer')}
+          className={classNames(endReached ? 'cursor-not-allowed opacity-50' : 'cursor-pointer')}
           onClick={handleMoreButton}>
           <Button
             disabled
@@ -119,7 +112,7 @@ function Tabs() {
           {...{
             setIsOpen,
             isOpen,
-            children: <DetailModal data={selectedItem} />,
+            children: <DetailModal data={selectedItem} setData={setSelectedItem} />,
             title: selectedItem?.title ?? 'Post Detail',
           }}
         />

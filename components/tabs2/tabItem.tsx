@@ -1,4 +1,4 @@
-import { IBidding } from '../../types/bidding'
+import { IAsset } from '../../types/asset'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Dispatch } from 'react'

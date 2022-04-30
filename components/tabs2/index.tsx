@@ -70,7 +70,7 @@ function Tabs2({ collection }: { collection: 'ape' | 'god' }) {
         const response = await axios({
           method: 'GET',
           baseURL: 'https://testnets-api.opensea.io',
-          url: `api/v1/assets?asset_contract_address=${collections[collection].address}&order_direction=desc&offset=${currentIndex}&limit=16`,
+          url: `api/v1/assets?asset_contract_address=${collections[collection].address}&order_by=sale_price&order_direction=desc&offset=${currentIndex}&limit=16`,
         })
         if (!response.data) return
 
@@ -87,7 +87,7 @@ function Tabs2({ collection }: { collection: 'ape' | 'god' }) {
       }
     }
     //OpenSea Test API rate limit does not allow two api call at the same time
-    setTimeout(getNFTs, currentIndex === 0 && collection === 'god' ? 1000 : 0)
+    setTimeout(getNFTs, currentIndex === 0 && collection === 'god' ? 2000 : 0)
   }, [collection, collections, currentIndex])
 
   function handleMoreButton() {

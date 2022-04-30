@@ -42,8 +42,8 @@ export default function Button({
   }
 
   const variantMap = {
-    [ButtonVariant.Primary]: 'bg-primary text-white',
-    [ButtonVariant.Secondary]: 'text-primary',
+    [ButtonVariant.Primary]: 'bg-primary text-white hover:border-indigo-700 hover:bg-indigo-700',
+    [ButtonVariant.Secondary]: 'text-primary hover:border-indigo-700 hover:bg-indigo-100',
   }
   const classes = classNames(
     sizeMap[size],
