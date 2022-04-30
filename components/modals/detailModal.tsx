@@ -18,7 +18,7 @@ export default function DetailModal({ data, setData }: { data: IAsset; setData: 
           <Image alt="" src={data.imageUrl} layout="fill" objectFit="cover" className="rounded-md" />
         </li>
         <li>
-          <h3 className="text-sm font-medium leading-5 mt-4">{data.title}</h3>
+          <h3 className="text-2xl font-extrabold leading-5 mt-4">{data.title}</h3>
         </li>
         <li className="flex justify-between items-center mt-2">
           <div className="flex items-center">
@@ -29,7 +29,7 @@ export default function DetailModal({ data, setData }: { data: IAsset; setData: 
               />
             </svg>
 
-            <span className="text-[#00AC4F] ml-2 font-bold">{data.lastSale?.price ?? 0} ETH</span>
+            <span className="text-[#00AC4F] text-lg ml-2 font-bold">{data.lastSale?.price ?? 0} ETH</span>
           </div>
           <div>
             <span className="bg-gray-100 rounded-full py-2 px-4 inline-block">

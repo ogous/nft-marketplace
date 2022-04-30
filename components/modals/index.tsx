@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import DetailModal from './detailModal'
 import UploadModal from './uploadModal'
 import BidModal from './bidModal'
+import { XIcon } from '@heroicons/react/outline'
 
 interface IModal {
   title: string
@@ -52,9 +53,18 @@ const Modal: FC<IModal> = ({ title, description, children, isOpen, setIsOpen }) 
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95">
               <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                  {title}
-                </Dialog.Title>
+                <div className="flex justify-between items-center">
+                  <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+                    {title}
+                  </Dialog.Title>
+                  <a
+                    onClick={() => setIsOpen(false)}
+                    className="cursor-pointer bg-gray-100 w-10 h-10 rounded-full
+                  flex items-center justify-center
+                  ">
+                    <XIcon className="w-5 h-5" />
+                  </a>
+                </div>
                 {description ? <Dialog.Description>{description}</Dialog.Description> : null}
                 <div className="mt-2">{children}</div>
               </div>
