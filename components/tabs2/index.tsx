@@ -68,7 +68,7 @@ function Tabs2({ collection }: { collection: 'ape' | 'god' }) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   const FakeBoredApeYachtClub = '0x7470ea065e50e3862cd9b8fb7c77712165da80e5'
-  const AzukiGods = '0xb74bf94049d2c01f8805b8b15db0909168cabf46'
+  const AzukiGod = '0xb74bf94049d2c01f8805b8b15db0909168cabf46'
 
   const collections = React.useMemo(
     () => ({
@@ -77,8 +77,8 @@ function Tabs2({ collection }: { collection: 'ape' | 'god' }) {
         address: FakeBoredApeYachtClub,
       },
       god: {
-        title: 'Azuki Gods',
-        address: AzukiGods,
+        title: 'Azuki God',
+        address: AzukiGod,
       },
     }),
     [],
