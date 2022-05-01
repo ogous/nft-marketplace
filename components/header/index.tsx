@@ -25,7 +25,7 @@ function Header() {
 
   useEffect(() => {
     window.ethereum.on('accountsChanged', () => window.location.reload())
-    window.ethereum.on('networkChanged', () => window.location.reload())
+    window.ethereum.on('chainChanged', () => window.location.reload())
   }, [])
 
   const uploadClick = () => {
