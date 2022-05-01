@@ -23,10 +23,10 @@ function Header() {
     }
   }, [])
 
-  useEffect(() => {
-    window.ethereum.on('accountsChanged', () => window.location.reload())
-    window.ethereum.on('chainChanged', () => window.location.reload())
-  }, [])
+  // useEffect(() => {
+  //   window.ethereum.on('accountsChanged', () => window.location.reload())
+  //   window.ethereum.on('chainChanged', () => window.location.reload())
+  // }, [])
 
   const uploadClick = () => {
     setIsOpen(!isOpen)
