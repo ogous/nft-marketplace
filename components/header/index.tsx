@@ -1,40 +1,119 @@
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect, Dispatch } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Modal, { UploadModal } from '../modals'
 import { ethers } from 'ethers'
 import Button, { ButtonSize, ButtonVariant } from '../../theme/button'
+import type { IUser } from '../../types/user'
+import { UserIcon } from '@heroicons/react/outline'
+import { ApiPromise, WsProvider } from '@polkadot/api'
 
 function Header() {
+  const [polkadot, setPolkadot] = useState<typeof import('@polkadot/extension-dapp')>()
+  const [user, setUser] = useState<IUser | undefined>()
+  const [loading, setLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const [showETHNetworkAlert, setShowETHNetworkAlert] = useState(false)
+
+  useEffect(() => {
+    const storedUser = window.localStorage.getItem('user')
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
+  }, [])
+
+  useEffect(() => {
+    window.ethereum.on('accountsChanged', () => window.location.reload())
+    window.ethereum.on('networkChanged', () => window.location.reload())
+  }, [])
+
   const uploadClick = () => {
     setIsOpen(!isOpen)
   }
 
-  useEffect(() => {
-    async function get() {
-      try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
+  function saveUser(user: IUser) {
+    setUser(user)
+    window.localStorage.setItem('user', JSON.stringify(user))
+  }
 
-        const response = await provider.send('eth_requestAccounts', [])
-        console.log('request ETH', response)
-        const signer = provider.getSigner()
-        console.log('SIGNER', signer)
-        console.log('Account:', await signer.getAddress())
-      } catch (e) {
-        if (e instanceof Error) console.log(e.message)
-      }
+  async function handleDisconnect() {
+    setUser(undefined)
+    window.localStorage.removeItem('user')
+    setShowETHNetworkAlert(false)
+  }
+
+  useEffect(() => {
+    // @polkadot/extension-dapp has an issue on Next.js:
+    // https://github.com/polkadot-js/extension/issues/571
+    // https://github.com/polkadot-js/extension/issues/1050
+    async function initPolkadot() {
+      const polkadot = await import('@polkadot/extension-dapp')
+      setPolkadot(polkadot)
     }
-    get()
+    initPolkadot()
   }, [])
 
   async function connectEthereum() {
-    console.log('try to connect ethereum')
+    setLoading(true)
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      const response = await provider.send('eth_requestAccounts', [])
+      const signer = provider.getSigner()
+      const address = await signer.getAddress()
+      const balance = await signer.getBalance().then((balance) => {
+        const balanceInEth = ethers.utils.formatEther(balance)
+
+        return balanceInEth + ' ETH'
+      })
+      const image = await provider.getAvatar(address)
+
+      // Alert if network not ETH Mainnet
+      if (provider.network.chainId !== 1) {
+        setShowETHNetworkAlert(true)
+      }
+      const user: IUser = {
+        address,
+        balance,
+        provider: 'Metamask',
+        image,
+      }
+
+      saveUser(user)
+    } catch (e) {
+      if (e instanceof Error) window.alert(e.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function connectPolkadot() {
-    console.log('try to connect polkadot')
+    if (!polkadot) return
+    setLoading(true)
+    try {
+      const allInjected = await polkadot.web3Enable('NFT Marketplace for Capsule Labs')
+      const allAccounts = await polkadot.web3Accounts()
+
+      const wsProvider = new WsProvider('wss://rpc.polkadot.io')
+      const api = await ApiPromise.create({ provider: wsProvider })
+
+      const res = await api.query.system.account(allAccounts[0].address)
+      console.log(res.toHuman())
+
+      const user: IUser = {
+        address: allAccounts[0].address,
+        balance: res.toHuman()?.data?.free + ' DOT',
+        provider: 'Polkadot',
+        image: '',
+      }
+      saveUser(user)
+    } catch (e) {
+      if (e instanceof Error) {
+        e.message
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -99,12 +178,30 @@ function Header() {
               {({ open }) => (
                 <>
                   <Popover.Button className="ml-6">
-                    <Button
-                      disabled
-                      title="Connect Wallet"
-                      size={ButtonSize.Medium}
-                      variant={ButtonVariant.Secondary}
-                    />
+                    {user ? (
+                      <div className="px-2 flex items-center max-w-[280px] h-12 border-2 border-primary rounded-full cursor-pointer">
+                        <span className="whitespace-nowrap">{user.balance}</span>
+                        <span className="ml-2 mr-2 py-1 px-2 rounded-full bg-gray-100 truncate overflow-hidden">
+                          {user.address}
+                        </span>
+
+                        {user.image ? (
+                          <Image className="rounded-full" src={user.image} width={40} height={40} alt={user.address} />
+                        ) : (
+                          <div className="rounded-full bg-gray-200">
+                            <UserIcon className="text-gray-700 w-8 h-8 p-1.5" />
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <Button
+                        disabled
+                        loading={loading}
+                        title="Connect Wallet"
+                        size={ButtonSize.Medium}
+                        variant={ButtonVariant.Secondary}
+                      />
+                    )}
                   </Popover.Button>
                   <Transition
                     as={Fragment}
@@ -116,30 +213,59 @@ function Header() {
                     leaveTo="opacity-0 translate-y-1">
                     <Popover.Panel className="absolute z-10 mt-3 transform px-2 right-0 -ml-12">
                       <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
-                        <div className="relative grid gap-6 bg-white p-6">
-                          <a
-                            onClick={connectEthereum}
-                            className="py-3 p-6 flex items-center cursor-pointer rounded-lg hover:bg-gray-50">
-                            <div className="h-8 w-8">
-                              <Image src="/metamask.svg" width={32} height={32} alt="Metamask" />
+                        {user ? (
+                          <div className="p-6 bg-white max-w-[280px]">
+                            <a
+                              onClick={handleDisconnect}
+                              className="cursor-pointer rounded-full border border-primary py-1 p-2 text-xs">
+                              Disconnect
+                            </a>
+                            <p className="mt-2 text-xs text-gray-300 whitespace-nowrap">
+                              Connected with {user.provider}
+                            </p>
+                            <div className="flex items-center mt-2">
+                              {user.image ? (
+                                <Image
+                                  className="rounded-full"
+                                  src={user.image}
+                                  width={40}
+                                  height={40}
+                                  alt={user.address}
+                                />
+                              ) : (
+                                <div className="rounded-full bg-gray-200">
+                                  <UserIcon className="text-gray-700 w-8 h-8 p-1.5" />
+                                </div>
+                              )}
+                              <span className="truncate ml-2 font-bold font-md">{user.address}</span>
                             </div>
-                            <div className="ml-6">
-                              <p className="text-base font-medium text-gray-900">Metamask</p>
-                              <p className="mt-1 text-xs text-gray-300 whitespace-nowrap">Connect with Metamask</p>
-                            </div>
-                          </a>
-                          <a
-                            onClick={connectPolkadot}
-                            className=" py-3 p-6 flex items-center cursor-pointer rounded-lg hover:bg-gray-50">
-                            <div className="h-8 w-8">
-                              <Image src="/polkadot.svg" width={32} height={32} alt="Polkadot" />
-                            </div>
-                            <div className="ml-6">
-                              <p className="text-base font-medium text-gray-900">Polkadot</p>
-                              <p className="mt-1 text-xs text-gray-300 whitespace-nowrap">Connect with Polkadot</p>
-                            </div>
-                          </a>
-                        </div>
+                          </div>
+                        ) : (
+                          <div className="relative grid gap-6 bg-white p-6">
+                            <a
+                              onClick={connectEthereum}
+                              className="py-3 p-6 flex items-center cursor-pointer rounded-lg hover:bg-gray-50">
+                              <div className="h-8 w-8">
+                                <Image src="/metamask.svg" width={32} height={32} alt="Metamask" />
+                              </div>
+                              <div className="ml-6">
+                                <p className="text-base font-medium text-gray-900">Metamask</p>
+                                <p className="mt-1 text-xs text-gray-300 whitespace-nowrap">Connect with Metamask</p>
+                              </div>
+                            </a>
+                            <a
+                              onClick={connectPolkadot}
+                              className=" py-3 p-6 flex items-center cursor-pointer rounded-lg hover:bg-gray-50">
+                              <div className="h-8 w-8">
+                                <Image src="/polkadot.svg" width={32} height={32} alt="Polkadot" />
+                              </div>
+                              <div className="ml-6">
+                                <p className="text-base font-medium text-gray-900">Polkadot</p>
+                                <p className="mt-1 text-xs text-gray-300 whitespace-nowrap">Connect with Polkadot</p>
+                              </div>
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </Popover.Panel>
                   </Transition>
@@ -149,6 +275,16 @@ function Header() {
           </div>
         </div>
       </div>
+      <Modal {...{ isOpen: showETHNetworkAlert, setIsOpen: setShowETHNetworkAlert }} title="Change Network">
+        <div className="p-4">
+          <p className="mb-4">
+            Your wallet is connected to a diffrent network. You should change it to Ethereum Mainnet.
+          </p>
+          <a className="cursor-pointer" onClick={handleDisconnect}>
+            <Button disabled title="Sign out" />
+          </a>
+        </div>
+      </Modal>
     </Popover>
   )
 }
