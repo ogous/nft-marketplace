@@ -122,7 +122,7 @@ function Tabs2({ collection }: { collection: 'ape' | 'god' }) {
         <span className="block xl:inline">{collections[collection].title}</span>
       </h2>
 
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid md:grid-cols-4 grid-cols-2 gap-2">
         {data?.map((item) => {
           return <TabItem key={item.id} {...{ post: item, setIsOpen, setSelectedItem }} />
         })}

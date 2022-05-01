@@ -4,7 +4,7 @@ import Image from 'next/image'
 export default function Section() {
   return (
     <main className="mt-10 mx-auto max-w-7xl px-6 sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28 relative flex md:flex-row flex-col-reverse">
-      <div className="sm:text-left text-center flex-1 pr-8">
+      <div className="md:text-left text-center flex-1 md:pr-8 ">
         <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
           <span className="block xl:inline">Discover, and collect </span>{' '}
           <span className="block text-primary xl:inline">Digital Art NFTs</span>
@@ -18,7 +18,7 @@ export default function Section() {
             <Button title="Explore Now" size={ButtonSize.Big} />
           </div>
         </div>
-        <div className="grid grid-cols-3 w-2/3 mb-16">
+        <div className="grid grid-cols-3 md:w-2/3 w-full mb-16">
           <div className="grid">
             <span className="font-extrabold text-4xl">
               98<span className="font-bold">K+</span>

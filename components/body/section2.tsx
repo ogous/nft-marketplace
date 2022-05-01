@@ -5,9 +5,9 @@ export default function Section2() {
   return (
     <>
       <section className="bg-gray-100 p-6">
-        <div className="mb-12 grid grid-cols-3 gap-4 justify-center items-center align-middle py-4">
+        <div className="mb-12 grid md:grid-cols-3 gap-4 justify-center items-center align-middle py-4">
           <div>
-            <h3 className="text-xl tracking-tight font-extrabold text-gray-900 h-full justify-center">
+            <h3 className="md:text-left text-center text-xl tracking-tight font-extrabold text-gray-900 h-full justify-center">
               THE AMAZING NFT ART
               <br />
               OF THE WORLD HERE
@@ -75,7 +75,7 @@ export default function Section2() {
           <h2 className="text-xl mb-4 tracking-tight font-extrabold text-gray-900">
             <span className="block xl:inline">COLLECTION FEATURED NFTS</span>
           </h2>
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             <div className="grid grid-cols-3 gap-2">
               <div className="col-span-2 w-full aspect-square relative">
                 <Image className="rounded-md" src="/hero/hero_2.png" layout="fill" alt="" />
@@ -164,11 +164,13 @@ export default function Section2() {
         </div>
       </section>
       <section className='p-6"'>
-        <div className="my-12 flex">
-          <div className="flex-1 relative">
-            <Image className="object-contain" src="/hero/hero_6.png" layout="fill" alt="" />
+        <div className="my-12 flex md:flex-row flex-col">
+          <div className="flex-1 relative px-6 md:mx-0">
+            <div className=" md:aspect-auto aspect-square">
+              <Image className="object-contain" src="/hero/hero_6.png" layout="fill" alt="" />
+            </div>
           </div>
-          <div className="flex-1 py-24 px-8">
+          <div className="flex-1 py-8 md:py-24 px-8">
             <h2 className="text-xl mb-8 tracking-tight font-extrabold text-gray-900">
               <span className="block xl:inline">
                 CREATE AND

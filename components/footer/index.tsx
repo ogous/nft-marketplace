@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="p-4 bg-white sm:p-6">
       <div className="md:flex md:justify-between">
-        <div className="grid grid-cols-6 gap-8 sm:gap-6 sm:grid-cols-6">
+        <div className="grid grid-cols-2 md:grid-cols-6 md:gap-6 ">
           <div className="mb-6 md:mb-0 col-span-2">
             <a href="#" className="flex items-center mb-4">
               <Image src="/logo-dark.svg" className="mr-3 h-8" alt="NFTERS" width={107} height={29} />
@@ -118,7 +118,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-          <div className="col-span-2">
+          <div className="col-span-2 md:mt-0 mt-4">
             <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase text-black">Stay in the loop</h2>
             <p className="text-sm text-gray-500 sm:text-left dark:text-gray-400 mb-6">
               Join our mailing list to stay in the loop with our newest feature releases, NFT drops, and tips and tricks

@@ -85,7 +85,7 @@ function Tabs() {
         <Tab.Panels className="mt-2">
           {Object.keys(categories).map((category) => (
             <Tab.Panel key={category}>
-              <div className="flex grid grid-cols-4 gap-2">
+              <div className="flex grid md:grid-cols-4 grid-cols-2 gap-2">
                 {data.map((post) => (
                   <TabItem key={post._id} {...{ post, setIsOpen, setSelectedItem }} />
                 ))}

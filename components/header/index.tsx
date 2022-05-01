@@ -6,7 +6,7 @@ import Modal, { UploadModal } from '../modals'
 import { ethers } from 'ethers'
 import Button, { ButtonSize, ButtonVariant } from '../../theme/button'
 import type { IUser } from '../../types/user'
-import { UserIcon } from '@heroicons/react/outline'
+import { ClipboardCopyIcon, UserIcon } from '@heroicons/react/outline'
 import { ApiPromise, WsProvider } from '@polkadot/api'
 
 function Header() {
@@ -120,7 +120,7 @@ function Header() {
     <Popover className="relative bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
-          <div className="flex justify-start items-center lg:w-0 lg:flex-1">
+          <div className="flex w-full md:w-auto justify-between md:justify-start md:items-center lg:w-0 lg:flex-1">
             <Link href="#">
               <a>
                 <span className="sr-only">Nfters</span>
@@ -129,20 +129,29 @@ function Header() {
                 </div>
               </a>
             </Link>
-            <Link href={'#'}>
-              <a className="ml-6 text-base font-medium text-gray-500 hover:text-gray-900">Marketplace</a>
-            </Link>
+            <a
+              onClick={() => {
+                //open Modal
+              }}
+              className="cursor-pointer rounded-full bg-gray-200 md:hidden">
+              <UserIcon className="text-gray-700 w-8 h-8 p-1.5" />
+            </a>
+            <div className="hidden md:block">
+              <Link href={'#'}>
+                <a className="ml-6 text-base font-medium text-gray-500 hover:text-gray-900">Marketplace</a>
+              </Link>
 
-            <Link href={'#'}>
-              <a className="ml-6 text-base font-medium text-gray-500 hover:text-gray-900">Resource</a>
-            </Link>
-            <Link href={'#'}>
-              <a className="ml-6 text-base font-medium text-gray-500 hover:text-gray-900">About</a>
-            </Link>
+              <Link href={'#'}>
+                <a className="ml-6 text-base font-medium text-gray-500 hover:text-gray-900">Resource</a>
+              </Link>
+              <Link href={'#'}>
+                <a className="ml-6 text-base font-medium text-gray-500 hover:text-gray-900">About</a>
+              </Link>
+            </div>
           </div>
 
           <div className="hidden md:flex items-center justify-end lg:w-0">
-            <form>
+            <form className="hidden md:flex">
               <div className="relative w-52">
                 <input
                   type="search"
@@ -238,6 +247,16 @@ function Header() {
                                 </div>
                               )}
                               <span className="truncate ml-2 font-bold font-md">{user.address}</span>
+                            </div>
+                            <div className="flex items-end">
+                              <a
+                                className="cursor-pointer  flex items-center mt-2 bg-gray-100 rounded-md py-1 px-2 hover:bg-gray-200"
+                                onClick={() => navigator.clipboard.writeText(user.address)}>
+                                <div className="w-4 h-4 text-gray-500 mr-1">
+                                  <ClipboardCopyIcon />
+                                </div>
+                                <span className="text-gray-500 text-xs">Copy</span>
+                              </a>
                             </div>
                           </div>
                         ) : (
