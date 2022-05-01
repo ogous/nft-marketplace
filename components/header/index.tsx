@@ -98,11 +98,13 @@ function Header() {
       const api = await ApiPromise.create({ provider: wsProvider })
 
       const res = await api.query.system.account(allAccounts[0].address)
-      console.log(res.toHuman())
+
+      const balance: any = res.toHuman()
+      const freeBalance: any = balance.data.free
 
       const user: IUser = {
         address: allAccounts[0].address,
-        balance: res.toHuman()?.data?.free + ' DOT',
+        balance: freeBalance + ' DOT',
         provider: 'Polkadot',
         image: '',
       }
