@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
+html,
+body {
   overflow-x: hidden;
 }
