@@ -138,7 +138,7 @@ function Header() {
               className="cursor-pointer rounded-full bg-gray-200 md:hidden">
               <UserIcon className="text-gray-700 w-8 h-8 p-1.5" />
             </a>
-            <div className="hidden md:block">
+            <div className="hidden lg:block">
               <Link href={'#'}>
                 <a className="ml-6 text-base font-medium text-gray-500 hover:text-gray-900">Marketplace</a>
               </Link>
