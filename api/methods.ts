@@ -9,18 +9,21 @@ export async function list({ offset, limit = 16, category }: { offset: number; l
   })
 }
 
-export async function create(data: IAsset) {
+export async function create(data: FormData) {
   return baseAPI({
     url: 'api/create',
     method: 'POST',
     data,
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
   })
 }
 
 interface IMakeBidReq {
   id: IAsset['_id']
-  price: number
-  user: string
+  price: ILastSale['price']
+  user: ILastSale['user']
 }
 
 export async function makeBid(data: IMakeBidReq) {

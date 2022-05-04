@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, Dispatch } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { create } from '../../api/methods'
 import Loader from '../../theme/loader'
+import { IUser } from '../../types/user'
 
 enum AssetCategory {
   art = 'art',
@@ -13,14 +14,14 @@ enum AssetCategory {
 }
 
 type Inputs = {
-  imageUrl: string
+  image: File[]
   title: string
   endTime: string
   creator: string
   category: AssetCategory
 }
 
-export default function UploadModal() {
+export default function UploadModal({ setIsOpen }: { setIsOpen: Dispatch<boolean> }) {
   const {
     register,
     handleSubmit,
@@ -28,11 +29,23 @@ export default function UploadModal() {
     formState: { errors },
   } = useForm<Inputs>()
   const [loading, setLoading] = useState(false)
+  const user: IUser = JSON.parse(window.localStorage.getItem('user') ?? '')
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true)
 
     try {
-      await create(data)
+      const form = new FormData()
+
+      const file = data.image[0]
+      form.append('image', file)
+      form.append('title', data.title)
+      form.append('category', data.category)
+      form.append('endTime', data.endTime)
+      form.append('creator', data.creator)
+
+      await create(form)
+
+      setIsOpen(false)
     } catch (error) {
       if (error instanceof Error) window.alert(error.message)
     } finally {
@@ -42,25 +55,24 @@ export default function UploadModal() {
   }
 
   return (
-    /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-6">
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-900 " htmlFor="image">
-            Image URI
+            Image
           </label>
           <input
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             aria-describedby="image_help"
             id="image"
-            type="text"
-            {...register('imageUrl', { required: true })}
+            type="file"
+            // name="image"
+            {...register('image', { required: true })}
             required
           />
-          {errors.imageUrl && <span className="text-red-500 text-sm">Image file is required</span>}
+          {errors.image && <span className="text-red-500 text-sm">Image file is required</span>}
           <p className="mt-1 text-sm text-gray-500 " id="image_help">
-            {/* SVG, PNG, JPG or GIF */}
-            Add image URI, image upload is coming soon...
+            SVG, PNG, JPG or GIF
           </p>
         </div>
       </div>
@@ -114,11 +126,7 @@ export default function UploadModal() {
           Enter time UTC string, select Date and Time coming soon...
         </p>
       </div>
-      <input
-        type="hidden"
-        value={'0xd31fe3b2c23bbf7301deb5888f0627482a7622b6'}
-        {...register('creator', { required: true })}
-      />
+      <input type="hidden" value={user.address} {...register('creator', { required: true })} />
 
       {loading ? (
         <Loader />

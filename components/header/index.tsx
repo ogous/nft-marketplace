@@ -184,7 +184,9 @@ function Header() {
             <Popover.Button onClick={uploadClick} className="ml-6">
               <Button disabled title="Upload" size={ButtonSize.Medium} variant={ButtonVariant.Primary} />
             </Popover.Button>
-            <Modal {...{ setIsOpen, isOpen, title: 'Create an asset', children: <UploadModal /> }} />
+            <Modal
+              {...{ setIsOpen, isOpen, title: 'Create an asset', children: <UploadModal setIsOpen={setIsOpen} /> }}
+            />
             <Popover className="relative">
               {({ open }) => (
                 <>
