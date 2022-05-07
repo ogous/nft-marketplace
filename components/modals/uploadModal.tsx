@@ -29,7 +29,8 @@ export default function UploadModal({ setIsOpen }: { setIsOpen: Dispatch<boolean
     formState: { errors },
   } = useForm<Inputs>()
   const [loading, setLoading] = useState(false)
-  const user: IUser = JSON.parse(window.localStorage.getItem('user') ?? '')
+  const stored = window.localStorage.getItem('user')
+  const user: IUser = stored && JSON.parse(stored)
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true)
 

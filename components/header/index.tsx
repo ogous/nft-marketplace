@@ -29,6 +29,10 @@ function Header() {
   // }, [])
 
   const uploadClick = () => {
+    if (!user) {
+      window.alert('You have to connect your wallet before uploading a NFT')
+      return
+    }
     setIsOpen(!isOpen)
   }
 
