@@ -1,8 +1,10 @@
 import React, { useState, Dispatch } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { create } from '../../api/methods'
 import Loader from '../../theme/loader'
 import { IUser } from '../../types/user'
+import ReactDatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 enum AssetCategory {
   art = 'art',
@@ -16,7 +18,7 @@ enum AssetCategory {
 type Inputs = {
   image: File[]
   title: string
-  endTime: string
+  endTime: Date
   creator: string
   category: AssetCategory
 }
@@ -25,7 +27,7 @@ export default function UploadModal({ setIsOpen }: { setIsOpen: Dispatch<boolean
   const {
     register,
     handleSubmit,
-    // watch,
+    control,
     formState: { errors },
   } = useForm<Inputs>()
   const [loading, setLoading] = useState(false)
@@ -41,7 +43,7 @@ export default function UploadModal({ setIsOpen }: { setIsOpen: Dispatch<boolean
       form.append('image', file)
       form.append('title', data.title)
       form.append('category', data.category)
-      form.append('endTime', data.endTime)
+      form.append('endTime', data.endTime.toISOString())
       form.append('creator', data.creator)
 
       await create(form)
@@ -104,7 +106,7 @@ export default function UploadModal({ setIsOpen }: { setIsOpen: Dispatch<boolean
           <option value="art">Art</option>
           <option value="celebrities">Celebrities</option>
           <option value="gaming">Gaming</option>
-          <option value="sport">sport</option>
+          <option value="sport">Sport</option>
           <option value="music">Music</option>
           <option value="crypto">Crypto</option>
         </select>
@@ -114,18 +116,21 @@ export default function UploadModal({ setIsOpen }: { setIsOpen: Dispatch<boolean
         <label htmlFor="last_name" className="block mb-2 text-sm font-medium text-gray-900 ">
           End Time
         </label>
-        <input
-          type="text"
-          id="last_name"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-          placeholder={new Date().toUTCString()}
-          defaultValue={new Date().toUTCString()}
-          {...register('endTime', { required: true })}
-          required
+        <Controller
+          control={control}
+          name="endTime"
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <ReactDatePicker
+              onChange={onChange}
+              onBlur={onBlur}
+              selected={value}
+              required
+              placeholderText="Select a date"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+            />
+          )}
         />
-        <p className="mt-1 text-sm text-gray-500 " id="image_help">
-          Enter time UTC string, select Date and Time coming soon...
-        </p>
+        {errors.endTime && <span className="text-red-500 text-sm">End time is required</span>}
       </div>
       <input type="hidden" value={user.address} {...register('creator', { required: true })} />
 
